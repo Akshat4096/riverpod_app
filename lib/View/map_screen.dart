@@ -22,7 +22,6 @@ StateProvider<List<MapLocation>>((ref) => []);
 class MapScreen extends StatelessWidget {
   const MapScreen({Key? key}) : super(key: key);
 
-
   void navigateToMap(BuildContext context, LatLng? selectedLocation) {
     Navigator.pop(context, selectedLocation);
   }

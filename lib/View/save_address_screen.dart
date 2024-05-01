@@ -7,17 +7,19 @@ import 'package:riverpod_app/Model/map_location.dart';
 import 'map_screen.dart';
 import 'map_widget.dart';
 
+final isAddressSelectedProvider = StateProvider<bool>((ref) => false);
+
+
 class SavedAddressesScreen extends ConsumerWidget {
   const SavedAddressesScreen({Key? key}) : super(key: key);
-
-  void selectAddress(BuildContext context, LatLng location) {
-    Navigator.pop(context, location); // Return selected location
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<MapLocation> savedLocations = ref.watch(savedLocationsProvider);
     final LatLng? currentLocation = ref.watch(currentLocationProvider).asData?.value;
+    final isAddressSelected = ref.watch(mapProvider).isAddressSelected  ;
+    final selectedLocation = ref.watch(mapProvider).location;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Saved Addresses'),
@@ -34,9 +36,10 @@ class SavedAddressesScreen extends ConsumerWidget {
           final location = savedLocations[index];
           return ListTile(
             onTap: () {
-              ref.read(mapProvider.notifier).updateLocation(location.location!);
-              Navigator.pop(context); // Close the SavedAddressesScreen
-            },            leading: Text('${index+1}'),
+              ref.read(mapProvider.notifier).updateLocation(location.location! , true , currentLocation);
+              Navigator.pop(context);
+            },
+            leading: Text('${index+1}'),
             title: Text(location.address),
             subtitle: Text('Latitude: ${location.location?.latitude}, Longitude: ${location.location?.longitude}'),
             trailing: currentLocation != null && location.location == currentLocation
